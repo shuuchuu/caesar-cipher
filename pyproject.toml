@@ -1,0 +1,29 @@
+[project]
+authors = [
+  {name = "m09", email = "142691+m09@users.noreply.github.com"},
+]
+dependencies = [
+  "deal >= 4, < 5",
+]
+description = ""
+name = "caesar-cipher"
+requires-python = ">= 3.11"
+version = "0.1.0"
+
+[dependency-groups]
+dev = [
+  "hypothesis >= 6, < 7",
+  "mutmut >= 3, < 4",
+  "mypy >= 1, < 2",
+  "pytest >= 8, < 9",
+  "ruff >= 0.11, < 1",
+]
+
+[tool.mypy]
+disallow_untyped_defs = true
+ignore_missing_imports = true
+strict_optional = true
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
