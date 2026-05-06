@@ -2,7 +2,9 @@
 authors = [
   {name = "m09", email = "142691+m09@users.noreply.github.com"},
 ]
-dependencies = []
+dependencies = [
+  "deal >= 4, < 5",
+]
 description = "Implementation and testing of a Caesar cipher."
 homepage = "https://github.com/shuuchuu/caesar-cipher"
 license = "Apache-2.0"
@@ -14,6 +16,8 @@ version = "0.1.0"
 
 [dependency-groups]
 dev = [
+  "hypothesis >= 6",
+  "mutmut >= 3.5",
   "pytest >= 8",
   "ruff >= 0.11",
   "ty >= 0.0.33",
