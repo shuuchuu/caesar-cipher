@@ -1,62 +1,69 @@
-# Tests d'un algorithme de chiffrement
+# Testing an Encryption Algorithm
 
-*[English version](https://github.com/shuuchuu/caesar-cipher/tree/main-en)*
+*[Version française](https://github.com/shuuchuu/caesar-cipher)*
 
-Le projet des travaux pratiques *Tests d'un algorithme de chiffrement*. Leur énoncé est
-ci-dessous, pour les faire dans un Codespace GitHub ou un clone local&nbsp;; c'est le même
-que celui du notebook des travaux pratiques, en
-[français](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-fr.ipynb)
-ou en
-[anglais](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-en.ipynb),
-qui les fait dans Colab.
+The project of the *Testing an encryption algorithm* lab. Its instructions are below, to
+run the lab in a GitHub Codespace or a local clone; they are the same as the lab's
+notebook, in
+[English](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-en.ipynb)
+or in
+[French](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-fr.ipynb),
+which runs it in Colab.
 
-Nous allons nous intéresser à l'implémentation du
-[chiffre de César](https://fr.wikipedia.org/wiki/Chiffrement_par_d%C3%A9calage).
+We are going to focus on implementing the
+[Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
-Ce chiffrement simple effectue une rotation des caractères de l'alphabet (et ne touche
-pas aux autres caractères, comme la ponctuation ou les espaces).
+This simple encryption method involves rotating characters in the alphabet (and does not
+affect other characters like punctuation or spaces).
 
-## Mise en place de l'environnement de travail
+## Setting up the Working Environment
 
-Ouvrez le dépôt dans un Codespace&nbsp;: sur GitHub, **Code** > **Codespaces** > **Create
-codespace on main**, ou [ce lien](https://codespaces.new/shuuchuu/caesar-cipher). Le
-Codespace installe les dépendances à sa création, dans le `.venv` du projet.
+This English version of the lab is the repository's `main-en` branch. Open it in a
+Codespace: on GitHub, on the `main-en` branch, **Code** > **Codespaces** > **Create
+codespace on main-en**, or [this link](https://codespaces.new/shuuchuu/caesar-cipher/tree/main-en).
+The Codespace installs the dependencies when it is created, in the project's `.venv`.
 
-Dans un clone local, installez [uv](https://docs.astral.sh/uv/getting-started/installation/),
-puis lancez `uv sync` à la racine du dépôt.
+In a local clone of that branch, install
+[uv](https://docs.astral.sh/uv/getting-started/installation/), then run `uv sync` at the
+root of the repository:
 
-Les commandes ci-dessous se lancent dans un terminal à la racine du dépôt (**Terminal** >
-**Nouveau terminal** dans le Codespace), avec `uv run`, qui les exécute dans
-l'environnement du projet.
+```console
+git clone -b main-en https://github.com/shuuchuu/caesar-cipher.git
+cd caesar-cipher
+uv sync
+```
 
-## Tests à partir de la spécification
+The commands below run in a terminal at the root of the repository (**Terminal** > **New
+Terminal** in the Codespace), through `uv run`, which runs them in the project's
+environment.
 
-Sans regarder le fichier `src/caesar_cipher/caesar_cipher.py`, et d'après la description
-du chiffre de César sur Wikipédia (en particulier les exemples donnés), écrivez quelques
-tests simples (sous forme de fonctions) qui vérifient le chiffrement d'une chaîne par la
-fonction `rotate` fournie, puis exécutez-les.
+## Tests from the Specification
 
-Écrivez-les dans un nouveau fichier `exercises.py` à la racine du dépôt, qui commence
-par&nbsp;:
+Without looking at the `src/caesar_cipher/caesar_cipher.py` file, and based on the
+description of the Caesar cipher on Wikipedia (especially the examples given), write some
+simple tests (as functions) that check the encryption of a string by the provided
+`rotate` function, then run them.
+
+Write them in a new `exercises.py` file at the root of the repository, which starts with:
 
 ```python
 from caesar_cipher.caesar_cipher import rotate
 ```
 
-et exécutez-le avec `uv run python exercises.py`.
+and run it with `uv run python exercises.py`.
 
-## Démarche TDD (Test Driven Development)
+## TDD Approach (Test Driven Development)
 
-On veut ajouter une fonction `crack(ciphertext, known_word)` qui retrouve la clé d'un
-message chiffré dont on connaît un mot. Développez-la dans `exercises.py`, en suivant le
-cycle du TDD&nbsp;:
+We want to add a function `crack(ciphertext, known_word)` that recovers the key of an
+encrypted message when one of its words is known. Develop it in `exercises.py`, following
+the TDD cycle:
 
-1. Écrivez un test qui vérifie que `crack(rotate("attaque à l'aube", 3), "aube")` vaut
-   `3`, et exécutez-le&nbsp;: il doit échouer, puisque `crack` n'existe pas encore.
-2. Écrivez le code minimal qui le fait passer.
-3. Ajoutez un test qui vérifie que `crack` lève une `ValueError` quand aucune clé ne fait
-   apparaître le mot, voyez-le échouer, puis faites-le passer.
-4. Remaniez votre code si besoin, en vérifiant que les tests passent toujours.
+1. Write a test that checks that `crack(rotate("attaque à l'aube", 3), "aube")` is `3`,
+   and run it: it must fail, since `crack` does not exist yet.
+2. Write the minimal code that makes it pass.
+3. Add a test that checks that `crack` raises a `ValueError` when no key reveals the
+   word, see it fail, then make it pass.
+4. Refactor your code if needed, checking that the tests still pass.
 
 <details>
 <summary>Solution</summary>
@@ -88,25 +95,25 @@ test_crack_without_key()
 
 </details>
 
-## Utilisation de `pytest`
+## Using `pytest`
 
-Créez un fichier `tests/test_caesar_cipher.py` puis adaptez les fonctions qui testent
-`rotate` pour les rendre compatibles avec `pytest`, en regroupant les exemples dans un
-seul test avec `@pytest.mark.parametrize`.
+Create a `tests/test_caesar_cipher.py` file and adapt the functions that test `rotate` to
+make them compatible with `pytest`, grouping the examples in a single test with
+`@pytest.mark.parametrize`.
 
-Utilisez ensuite `pytest` pour exécuter les tests&nbsp;:
+Then use `pytest` to run the tests:
 
 ```console
 uv run pytest
 ```
 
-Enfin, complétez votre fichier de tests pour atteindre 5 cas de test.
+Finally, complete your test file to achieve 5 test cases.
 
-## Simulacres avec `unittest.mock`
+## Mocking with `unittest.mock`
 
-La fonction `encrypt_with_random_key` ci-dessous chiffre un texte avec une clé tirée au
-hasard&nbsp;: son résultat change à chaque appel, ce qui la rend difficile à tester.
-Copiez-la dans `exercises.py`&nbsp;:
+The `encrypt_with_random_key` function below encrypts a text with a randomly drawn key:
+its result changes on every call, which makes it hard to test. Copy it into
+`exercises.py`:
 
 ```python
 import random
@@ -119,11 +126,10 @@ def encrypt_with_random_key(text: str) -> tuple[str, int]:
     return rotate(text, key), key
 ```
 
-Écrivez un test qui remplace `random.randint` par un simulacre qui renvoie toujours `3`,
-avec
-[`unittest.mock.patch`](https://docs.python.org/fr/3/library/unittest.mock.html#unittest.mock.patch),
-puis qui vérifie le texte chiffré et la clé renvoyés, et que `random.randint` a été
-appelée une seule fois, avec les arguments `(1, 25)`.
+Write a test that replaces `random.randint` with a mock that always returns `3`, with
+[`unittest.mock.patch`](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch),
+then checks the returned encrypted text and key, and that `random.randint` was called
+once, with the arguments `(1, 25)`.
 
 <details>
 <summary>Solution</summary>
@@ -143,26 +149,24 @@ test_encrypt_with_random_key()
 
 </details>
 
-## Pour aller plus loin
+## Going Further
 
-### Tests par génération
+### Property-based Testing
 
-Utilisez [`hypothesis`](https://hypothesis.readthedocs.io/en/latest/) pour tester la
-fonction `rotate` avec des données aléatoires.
+Use [`hypothesis`](https://hypothesis.readthedocs.io/en/latest/) to test the `rotate`
+function with random data.
 
-### Contrats
+### Contracts
 
-Finalement, intégrez un contrat de pré-condition au code de
-`src/caesar_cipher/caesar_cipher.py`. Pour cela, utilisez la librairie
-[`deal`](https://deal.readthedocs.io/).
+Finally, integrate a pre-condition contract into the `src/caesar_cipher/caesar_cipher.py`
+code. Use the [`deal`](https://deal.readthedocs.io/) library for this purpose.
 
-### Tests par mutations
+### Mutation Testing
 
-Utilisez [`mutmut`](https://mutmut.readthedocs.io/) pour trouver les comportements que
-vos tests ne vérifient pas&nbsp;: chaque mutation qui passe votre suite de tests en révèle
-un.
+Use [`mutmut`](https://mutmut.readthedocs.io/) to find the behaviors your tests do not
+check: each mutation that passes your test suite reveals one.
 
-Itérez pour réduire le nombre de mutations qui passent votre suite de tests&nbsp;:
+Iterate to reduce the number of mutations that pass your test suite:
 
 ```console
 uv run mutmut run
@@ -171,5 +175,5 @@ uv run mutmut results
 
 ## Solution
 
-Les solutions des exercices qui créent des fichiers de tests sont sur la
-[branche `solution`](https://github.com/shuuchuu/caesar-cipher/tree/solution) du dépôt.
+The solutions of the exercises that create test files are on the repository's
+[`solution` branch](https://github.com/shuuchuu/caesar-cipher/tree/solution).
