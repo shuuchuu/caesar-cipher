@@ -176,4 +176,4 @@ uv run mutmut results
 ## Solution
 
 The solutions of the exercises that create test files are on the repository's
-[`solution` branch](https://github.com/shuuchuu/caesar-cipher/tree/solution).
+[`solution-en` branch](https://github.com/shuuchuu/caesar-cipher/tree/solution-en).
