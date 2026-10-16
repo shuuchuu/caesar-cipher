@@ -19,9 +19,14 @@ dev = [
   "hypothesis >= 6",
   "mutmut >= 3.5",
   "pytest >= 9",
+  "pytest-cov >= 7",
   "ruff >= 0.17",
   "ty >= 0.0.88",
 ]
+
+[tool.pytest]
+# Not mutmut's copy of the tests, in mutants/.
+testpaths = ["tests"]
 
 [tool.ruff]
 target-version = "py313"
