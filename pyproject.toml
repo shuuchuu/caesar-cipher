@@ -2,9 +2,7 @@
 authors = [
   {name = "m09", email = "142691+m09@users.noreply.github.com"},
 ]
-dependencies = [
-  "deal >= 4, < 5",
-]
+dependencies = []
 description = "Implementation and testing of a Caesar cipher."
 homepage = "https://github.com/shuuchuu/caesar-cipher"
 license = "Apache-2.0"
