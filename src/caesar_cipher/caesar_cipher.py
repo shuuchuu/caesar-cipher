@@ -8,7 +8,15 @@ def make_table(characters: str, key: int) -> dict[int, int]:
     return str.maketrans(characters, characters[key:] + characters[:key])
 
 
-@deal.ensure(lambda text, key, result: len(text) == len(result))
 def rotate(text: str, key: int) -> str:
     table = {**make_table(ascii_lowercase, key), **make_table(ascii_uppercase, key)}
     return text.translate(table)
+
+
+@deal.pre(lambda ciphertext, known_word: known_word != "")
+def crack(ciphertext: str, known_word: str) -> int:
+    for key in range(26):
+        if known_word in rotate(ciphertext, -key):
+            return key
+    msg = f"aucune clé ne fait apparaître {known_word!r}"
+    raise ValueError(msg)
