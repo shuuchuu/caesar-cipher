@@ -228,7 +228,7 @@ def crack(ciphertext: str, known_word: str) -> int:
     for key in range(26):
         if ...:
             return key
-    msg = f"aucune clé ne fait apparaître {known_word!r}"
+    msg = f"no key reveals {known_word!r}"
     raise ValueError(msg)
 ```
 
@@ -274,7 +274,7 @@ def crack(ciphertext: str, known_word: str) -> int:
     for key in range(26):
         if known_word in rotate(ciphertext, -key):
             return key
-    msg = f"aucune clé ne fait apparaître {known_word!r}"
+    msg = f"no key reveals {known_word!r}"
     raise ValueError(msg)
 ```
 
