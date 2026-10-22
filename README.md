@@ -41,7 +41,7 @@ tests simples de la fonction `rotate(text, key)` fournie&nbsp;: des fonctions qu
 vérifient avec `assert` le chiffrement d'une chaîne. Appelez-les ensuite.
 
 Pensez aux cas limites&nbsp;: la fin de l'alphabet, les majuscules, les caractères qui
-ne sont pas des lettres, une clé négative.
+ne sont pas des lettres, une clef négative.
 
 Écrivez-les dans un nouveau fichier `exercises.py` à la racine du dépôt, qui commence
 par&nbsp;:
@@ -57,7 +57,7 @@ et exécutez-le avec `uv run python exercises.py`.
 
 Un test est une fonction sans argument, dont le nom commence par `test_`, qui compare
 avec `assert` le résultat de `rotate` à la valeur attendue, calculée à la main. Avec une
-clé de 3, `a` devient `d`, et `x` revient au début de l'alphabet. Une clé négative
+clef de 3, `a` devient `d`, et `x` revient au début de l'alphabet. Une clef négative
 décale vers la gauche. Un test qui passe n'affiche rien, un test qui échoue lève une
 `AssertionError`.
 
@@ -116,8 +116,8 @@ regroupe vos exemples de `rotate` en un seul test, paramétré avec
 - la fin de l'alphabet (`z` devient `a`)&nbsp;;
 - les majuscules&nbsp;;
 - la ponctuation et les lettres accentuées, qui ne changent pas&nbsp;;
-- une clé négative&nbsp;;
-- une clé supérieure ou égale à 26.
+- une clef négative&nbsp;;
+- une clef supérieure ou égale à 26.
 
 Lancez ensuite les tests avec `uv run pytest -v`, qui affiche chaque cas sous son nom.
 
@@ -188,7 +188,7 @@ uv run pytest -v
 ## Démarche TDD (Test Driven Development)
 
 On veut ajouter au module `src/caesar_cipher/caesar_cipher.py` une fonction
-`crack(ciphertext, known_word)` qui retrouve la clé d'un message chiffré dont on connaît
+`crack(ciphertext, known_word)` qui retrouve la clef d'un message chiffré dont on connaît
 un mot. Développez-la en suivant le cycle du TDD, avec ses tests dans un nouveau fichier
 `tests/test_crack.py`&nbsp;:
 
@@ -196,15 +196,15 @@ un mot. Développez-la en suivant le cycle du TDD, avec ses tests dans un nouvea
    `3`, et lancez `pytest`&nbsp;: il doit échouer, puisque `crack` n'existe pas encore.
 2. Écrivez dans le module le code minimal qui le fait passer.
 3. Ajoutez un test qui vérifie que `crack` lève une `ValueError` dont le message cite le
-   mot, quand aucune clé ne le fait apparaître. Voyez-le échouer, puis faites-le passer.
+   mot, quand aucune clef ne le fait apparaître. Voyez-le échouer, puis faites-le passer.
 4. Remaniez votre code si besoin, en vérifiant que les tests passent toujours.
 
 <details>
 <summary>Conseils supplémentaires</summary>
 
 `uv run pytest -v tests/test_crack.py` ne lance que les tests de ce fichier. À l'étape
-1, l'import de `crack` échoue&nbsp;: c'est l'échec attendu. Pour retrouver la clé,
-essayez les 26 clés possibles&nbsp;: `rotate(ciphertext, -key)` déchiffre avec la clé
+1, l'import de `crack` échoue&nbsp;: c'est l'échec attendu. Pour retrouver la clef,
+essayez les 26 clefs possibles&nbsp;: `rotate(ciphertext, -key)` déchiffre avec la clef
 `key`. `pytest.raises(ValueError, match="xyz")` vérifie que le bloc lève une
 `ValueError` dont le message contient `xyz`.
 
@@ -288,11 +288,11 @@ uv run pytest -v tests/test_crack.py
 
 Écrivez cette fois des tests de `crack` avec `unittest`, dans un fichier
 `tests/test_crack_unittest.py`&nbsp;: une classe qui hérite de `unittest.TestCase`, dont
-la méthode `setUp` prépare un message, une clé et le message chiffré avec cette clé, et
+la méthode `setUp` prépare un message, une clef et le message chiffré avec cette clef, et
 trois tests qui les utilisent&nbsp;:
 
-- `crack` retrouve la clé à partir d'un mot du message&nbsp;;
-- la clé trouvée déchiffre le message&nbsp;;
+- `crack` retrouve la clef à partir d'un mot du message&nbsp;;
+- la clef trouvée déchiffre le message&nbsp;;
 - `crack` lève une `ValueError` pour un mot absent du message.
 
 Lancez-les avec `uv run python -m unittest discover -v`, puis avec `uv run pytest -v`.
@@ -373,7 +373,7 @@ uv run pytest -v
 
 ## Simulacres avec `unittest.mock`
 
-La fonction `encrypt_with_random_key` ci-dessous chiffre un texte avec une clé tirée au
+La fonction `encrypt_with_random_key` ci-dessous chiffre un texte avec une clef tirée au
 hasard&nbsp;: son résultat change à chaque appel, ce qui la rend difficile à tester.
 Copiez-la dans `exercises.py`&nbsp;:
 
@@ -389,7 +389,7 @@ def encrypt_with_random_key(text: str) -> tuple[str, int]:
 ```
 
 Écrivez un test qui remplace `random.randint` par un simulacre qui renvoie toujours `3`,
-avec `unittest.mock.patch`, puis qui vérifie le texte chiffré et la clé renvoyés, et que
+avec `unittest.mock.patch`, puis qui vérifie le texte chiffré et la clef renvoyés, et que
 `random.randint` a été appelée une seule fois, avec les arguments `(1, 25)`.
 
 **Documentation utile**
@@ -454,7 +454,7 @@ Vos tests vérifient-ils alors tout ce que font `rotate` et `crack`&nbsp;?
 l'affiche avec, pour chaque fichier, ses instructions (`Stmts`), celles qu'aucun test
 n'a exécutées (`Miss`), le pourcentage couvert (`Cover`) et les numéros des lignes
 manquées (`Missing`). Dans `crack`, la ligne souvent manquée est le `raise`&nbsp;: il
-faut un test où aucune clé ne fait apparaître le mot.
+faut un test où aucune clef ne fait apparaître le mot.
 
 ```console
 uv run pytest --cov=caesar_cipher --cov-report=term-missing
@@ -476,7 +476,7 @@ couvre autant de lignes. Les tests par mutations, plus bas, mesurent ce qui est 
 ### Tests par génération
 
 Avec `hypothesis`, écrivez dans un fichier `tests/test_properties.py` des tests de trois
-propriétés de `rotate`, vraies pour tout texte et toute clé&nbsp;:
+propriétés de `rotate`, vraies pour tout texte et toute clef&nbsp;:
 
 - le texte chiffré a la même longueur que le texte&nbsp;;
 - chiffrer avec `key1` puis avec `key2` revient à chiffrer avec `key1 + key2`&nbsp;;
@@ -491,7 +491,7 @@ propriétés de `rotate`, vraies pour tout texte et toute clé&nbsp;:
 <summary>Conseils supplémentaires</summary>
 
 `@given(st.text(), st.integers())` appelle le test avec des centaines de textes et de
-clés générés, passés à ses paramètres. `st.text(alphabet)` génère des textes faits des
+clefs générés, passés à ses paramètres. `st.text(alphabet)` génère des textes faits des
 caractères d'`alphabet`, qui peut être une stratégie&nbsp;:
 `st.characters(exclude_characters=ascii_letters)` génère tous les caractères sauf les
 lettres ASCII.
@@ -595,7 +595,7 @@ uv run mutmut show caesar_cipher.caesar_cipher.x_crack__mutmut_2
 <summary>Solution</summary>
 
 Avec les tests des solutions précédentes, une seule mutation survit&nbsp;: `range(26)`
-devenu `range(27)`. La clé 26 revient à la clé 0, déjà essayée&nbsp;: cette mutation ne
+devenu `range(27)`. La clef 26 revient à la clef 0, déjà essayée&nbsp;: cette mutation ne
 change pas ce que renvoie `crack`, et aucun test ne peut la détecter (mutation
 équivalente).
 
