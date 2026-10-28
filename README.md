@@ -194,19 +194,23 @@ un mot. Développez-la en suivant le cycle du TDD, avec ses tests dans un nouvea
 
 1. Écrivez un test qui vérifie que `crack(rotate("attaque à l'aube", 3), "aube")` vaut
    `3`, et lancez `pytest`&nbsp;: il doit échouer, puisque `crack` n'existe pas encore.
-2. Écrivez dans le module le code minimal qui le fait passer.
-3. Ajoutez un test qui vérifie que `crack` lève une `ValueError` dont le message cite le
+2. Écrivez dans le module le code minimal qui le fait passer, aussi naïf soit-il.
+3. Ajoutez un test qui vérifie que `crack(rotate("attaque à l'aube", 11), "aube")` vaut
+   `11`. Voyez-le échouer, puis généralisez le code pour que les deux tests passent.
+4. Ajoutez un test qui vérifie que `crack` lève une `ValueError` dont le message cite le
    mot, quand aucune clef ne le fait apparaître. Voyez-le échouer, puis faites-le passer.
-4. Remaniez votre code si besoin, en vérifiant que les tests passent toujours.
+5. Remaniez votre code si besoin, en vérifiant que les tests passent toujours.
 
 <details>
 <summary>Conseils supplémentaires</summary>
 
 `uv run pytest -v tests/test_crack.py` ne lance que les tests de ce fichier. À l'étape
-1, l'import de `crack` échoue&nbsp;: c'est l'échec attendu. Pour retrouver la clef,
-essayez les 26 clefs possibles&nbsp;: `rotate(ciphertext, -key)` déchiffre avec la clef
-`key`. `pytest.raises(ValueError, match="xyz")` vérifie que le bloc lève une
-`ValueError` dont le message contient `xyz`.
+1, l'import de `crack` échoue&nbsp;: c'est l'échec attendu. À l'étape 2, `return 3`
+suffit&nbsp;: c'est le code minimal, et le test de l'étape 3 le fait échouer. Pour
+retrouver n'importe quelle clef, essayez les 26 clefs possibles&nbsp;:
+`rotate(ciphertext, -key)` déchiffre avec la clef `key`.
+`pytest.raises(ValueError, match="xyz")` vérifie que le bloc lève une `ValueError` dont
+le message contient `xyz`.
 
 ```python
 import pytest
@@ -216,6 +220,10 @@ from caesar_cipher.caesar_cipher import crack, rotate
 
 def test_crack_finds_key():
     assert crack(rotate("attaque à l'aube", 3), "aube") == 3
+
+
+def test_crack_finds_other_key():
+    assert crack(rotate("attaque à l'aube", 11), "aube") == ...
 
 
 def test_crack_without_key():
@@ -247,6 +255,10 @@ from caesar_cipher.caesar_cipher import crack, rotate
 
 def test_crack_finds_key():
     assert crack(rotate("attaque à l'aube", 3), "aube") == 3
+
+
+def test_crack_finds_other_key():
+    assert crack(rotate("attaque à l'aube", 11), "aube") == 11
 
 
 def test_crack_without_key():
@@ -371,51 +383,50 @@ uv run pytest -v
 
 </details>
 
-## Simulacres avec `unittest.mock`
+## Fixtures de `pytest`
 
-La fonction `encrypt_with_random_key` ci-dessous chiffre un texte avec une clef tirée au
-hasard&nbsp;: son résultat change à chaque appel, ce qui la rend difficile à tester.
-Copiez-la dans `exercises.py`&nbsp;:
+Réécrivez maintenant vos tests `unittest` de `crack` à la manière de `pytest`, dans
+`tests/test_crack.py`, sous les tests de la démarche TDD&nbsp;: la préparation de
+`setUp` devient une fixture `secret` qui renvoie le message, la clef et le message
+chiffré, et chaque test devient une fonction qui la demande.
 
-```python
-import random
-
-from caesar_cipher.caesar_cipher import rotate
-
-
-def encrypt_with_random_key(text: str) -> tuple[str, int]:
-    key = random.randint(1, 25)
-    return rotate(text, key), key
-```
-
-Écrivez un test qui remplace `random.randint` par un simulacre qui renvoie toujours `3`,
-avec `unittest.mock.patch`, puis qui vérifie le texte chiffré et la clef renvoyés, et que
-`random.randint` a été appelée une seule fois, avec les arguments `(1, 25)`.
+Lancez `uv run pytest -v tests/test_crack.py`. Comparez avec `setUp`&nbsp;: combien de
+fois la fixture est-elle calculée&nbsp;? Et pour les tests qui ne la demandent pas&nbsp;?
 
 **Documentation utile**
 
-- https://docs.python.org/fr/3/library/unittest.mock.html#unittest.mock.patch
+- https://docs.pytest.org/en/stable/how-to/fixtures.html
 
 <details>
 <summary>Conseils supplémentaires</summary>
 
-`mock.patch("random.randint", return_value=3)` remplace `random.randint`, le temps du
-bloc `with`, par un simulacre qui renvoie toujours `3`. `as randint` nomme ce simulacre,
-qui enregistre ses appels. `encrypt_with_random_key` appelle `randint` à travers le
-module `random`&nbsp;: c'est là qu'on le remplace. Appelez la fonction de test&nbsp;:
-elle n'affiche rien si elle passe.
+Une fixture est une fonction décorée par `@pytest.fixture`&nbsp;; un test la reçoit en
+nommant l'un de ses paramètres comme elle. Elle peut renvoyer un n-uplet, que le test
+décompose&nbsp;: `message, key, ciphertext = secret` (un `_` en tête de nom marque une
+valeur inutilisée).
 
 ```python
-from unittest import mock
+import pytest
+
+from caesar_cipher.caesar_cipher import crack, rotate
+
+# Les tests de la démarche TDD
+...
 
 
-def test_encrypt_with_random_key():
-    with mock.patch(...) as randint:
-        assert encrypt_with_random_key("abc") == ...
-    randint.assert_called_once_with(...)
+@pytest.fixture
+def secret():
+    message = "rendez-vous à la gare à midi"
+    key = 7
+    return message, key, ...
 
 
-test_encrypt_with_random_key()
+def test_finds_key_of_secret(secret):
+    _message, key, ciphertext = secret
+    assert ...
+
+
+...
 ```
 
 </details>
@@ -423,17 +434,149 @@ test_encrypt_with_random_key()
 <details>
 <summary>Solution</summary>
 
+`tests/test_crack.py`&nbsp;:
+
+```python
+import pytest
+
+from caesar_cipher.caesar_cipher import crack, rotate
+
+
+def test_crack_finds_key():
+    assert crack(rotate("attaque à l'aube", 3), "aube") == 3
+
+
+def test_crack_finds_other_key():
+    assert crack(rotate("attaque à l'aube", 11), "aube") == 11
+
+
+def test_crack_without_key():
+    with pytest.raises(ValueError, match="xyz"):
+        crack("bonjour", "xyz")
+
+
+@pytest.fixture
+def secret():
+    message = "rendez-vous à la gare à midi"
+    key = 7
+    return message, key, rotate(message, key)
+
+
+def test_finds_key_of_secret(secret):
+    _message, key, ciphertext = secret
+    assert crack(ciphertext, "gare") == key
+
+
+def test_decrypts_secret(secret):
+    message, _key, ciphertext = secret
+    key = crack(ciphertext, "midi")
+    assert rotate(ciphertext, -key) == message
+
+
+def test_unknown_word_in_secret(secret):
+    _message, _key, ciphertext = secret
+    with pytest.raises(ValueError):
+        crack(ciphertext, "train")
+```
+
+La fixture est calculée avant chacun des trois tests qui la demandent (portée
+«&nbsp;function&nbsp;», par défaut), comme `setUp`. Les tests de la démarche TDD, qui ne
+la demandent pas, ne la calculent pas&nbsp;: `setUp`, lui, tourne avant chaque test de
+sa classe.
+
+```console
+uv run pytest -v tests/test_crack.py
+```
+
+</details>
+
+## Simulacres avec `unittest.mock`
+
+La fonction `encrypt_with_random_key` chiffre un texte avec une clef tirée au
+hasard&nbsp;: son résultat change à chaque appel, ce qui la rend difficile à tester. Elle
+est fournie dans un autre module du paquet, `src/caesar_cipher/keys.py`&nbsp;:
+
+```python
+from random import randint
+
+from caesar_cipher.caesar_cipher import rotate
+
+
+def encrypt_with_random_key(text: str) -> tuple[str, int]:
+    key = randint(1, 25)
+    return rotate(text, key), key
+```
+
+Écrivez dans `tests/test_keys.py` un test qui remplace `randint` par un simulacre qui
+renvoie toujours `3`, avec `unittest.mock.patch`, puis qui vérifie le texte chiffré et
+la clef renvoyés, et que le simulacre a été appelé une seule fois, avec les arguments
+`(1, 25)`. Essayez d'abord la cible `"random.randint"`&nbsp;: pourquoi le test
+échoue-t-il&nbsp;?
+
+Si vous avez le temps, écrivez une seconde version du test avec la fixture
+`monkeypatch` de `pytest`.
+
+**Documentation utile**
+
+- https://docs.python.org/fr/3/library/unittest.mock.html#unittest.mock.patch
+- https://docs.python.org/fr/3/library/unittest.mock.html#where-to-patch
+
+<details>
+<summary>Conseils supplémentaires</summary>
+
+`mock.patch("…", return_value=3)` remplace un nom, le temps du bloc `with`, par un
+simulacre qui renvoie toujours `3`&nbsp;; `as randint` nomme ce simulacre, qui
+enregistre ses appels. `keys.py` fait `from random import randint`&nbsp;: le module a sa
+propre référence à la fonction, que remplacer `random.randint` ne touche pas. La cible
+est le nom là où le code testé le cherche&nbsp;: `"caesar_cipher.keys.randint"`. Avec la
+fixture `monkeypatch`, `monkeypatch.setattr(keys, "randint", lambda a, b: 3)` remplace
+le même nom, sans enregistrer les appels.
+
 ```python
 from unittest import mock
 
+from caesar_cipher.keys import encrypt_with_random_key
+
 
 def test_encrypt_with_random_key():
-    with mock.patch("random.randint", return_value=3) as randint:
+    with mock.patch(..., return_value=3) as randint:
+        assert encrypt_with_random_key("abc") == ...
+    randint.assert_called_once_with(...)
+```
+
+```console
+uv run pytest -v tests/test_keys.py
+```
+
+</details>
+
+<details>
+<summary>Solution</summary>
+
+`tests/test_keys.py`&nbsp;:
+
+```python
+from unittest import mock
+
+from caesar_cipher import keys
+from caesar_cipher.keys import encrypt_with_random_key
+
+
+def test_encrypt_with_random_key():
+    # With mock.patch("random.randint"), keys.randint would stay the real function:
+    # the key would be random, and the mock would never be called.
+    with mock.patch("caesar_cipher.keys.randint", return_value=3) as randint:
         assert encrypt_with_random_key("abc") == ("def", 3)
     randint.assert_called_once_with(1, 25)
 
 
-test_encrypt_with_random_key()
+def test_encrypt_with_random_key_monkeypatch(monkeypatch):
+    monkeypatch.setattr(keys, "randint", lambda a, b: 3)
+    assert encrypt_with_random_key("abc") == ("def", 3)
+```
+
+```console
+uv run pytest -v tests/test_keys.py
 ```
 
 </details>
@@ -441,11 +584,20 @@ test_encrypt_with_random_key()
 ## Couverture de code
 
 L'extension `pytest-cov`, installée avec les dépendances du dépôt, mesure les lignes du
-paquet que les tests exécutent. Lancez vos tests en mesurant la couverture du paquet
-`caesar_cipher`, avec la liste des lignes manquées. Quelles lignes vos tests
-n'exécutent-ils pas&nbsp;? Ajoutez les tests qui manquent, jusqu'à 100&nbsp;%.
+paquet que les tests exécutent.
 
-Vos tests vérifient-ils alors tout ce que font `rotate` et `crack`&nbsp;?
+1. Mesurez la couverture du paquet `caesar_cipher` par les seuls tests de
+   `tests/test_caesar_cipher.py`, avec la liste des lignes manquées&nbsp;: quelles
+   fonctions ces tests n'exécutent-ils pas&nbsp;?
+2. Mesurez-la pour toute la suite de tests.
+3. Écrivez dans `tests/test_no_assert.py` un test qui appelle `crack` sans rien
+   vérifier&nbsp;: une fois avec un mot du message, une fois avec un mot absent. Mesurez
+   la couverture par `tests/test_caesar_cipher.py` et ce seul fichier, et comparez la
+   ligne de `caesar_cipher.py` à celle de la question 2. Vos tests vérifient-ils tout ce
+   que font `rotate` et `crack`&nbsp;?
+
+Supprimez ensuite `tests/test_no_assert.py` (`rm tests/test_no_assert.py`)&nbsp;: un test
+qui ne vérifie rien n'a pas sa place dans la suite.
 
 <details>
 <summary>Conseils supplémentaires</summary>
@@ -453,11 +605,25 @@ Vos tests vérifient-ils alors tout ce que font `rotate` et `crack`&nbsp;?
 `--cov=caesar_cipher` mesure la couverture du paquet, `--cov-report=term-missing`
 l'affiche avec, pour chaque fichier, ses instructions (`Stmts`), celles qu'aucun test
 n'a exécutées (`Miss`), le pourcentage couvert (`Cover`) et les numéros des lignes
-manquées (`Missing`). Dans `crack`, la ligne souvent manquée est le `raise`&nbsp;: il
-faut un test où aucune clef ne fait apparaître le mot.
+manquées (`Missing`). `pytest` ne lance que les fichiers de tests nommés sur la ligne de
+commande, et tous si on n'en nomme aucun. Un appel à `crack` avec un mot absent lève une
+`ValueError`&nbsp;: sans `pytest.raises`, qui vérifierait l'exception, entourez-le d'un
+`try`/`except ValueError: pass`.
 
 ```console
-uv run pytest --cov=caesar_cipher --cov-report=term-missing
+uv run pytest tests/test_caesar_cipher.py --cov=caesar_cipher --cov-report=term-missing
+```
+
+```python
+from caesar_cipher.caesar_cipher import crack, rotate
+
+
+def test_crack_runs():
+    crack(...)
+    try:
+        crack(...)
+    except ValueError:
+        pass
 ```
 
 </details>
@@ -465,11 +631,61 @@ uv run pytest --cov=caesar_cipher --cov-report=term-missing
 <details>
 <summary>Solution</summary>
 
-Avec les tests des solutions précédentes, la couverture est de 100&nbsp;%. Elle dit
-quelles lignes les tests exécutent, pas ce qu'ils vérifient&nbsp;: un test sans `assert`
-couvre autant de lignes. Les tests par mutations, plus bas, mesurent ce qui est vérifié.
+`crack` (lignes 15 à 19 de `caesar_cipher.py`) et `keys.py` ne sont exécutés par aucun
+test de `tests/test_caesar_cipher.py`&nbsp;:
+
+```console
+uv run pytest tests/test_caesar_cipher.py --cov=caesar_cipher --cov-report=term-missing
+```
+
+Toute la suite exécute 100&nbsp;% des lignes&nbsp;:
+
+```console
+uv run pytest --cov=caesar_cipher --cov-report=term-missing
+```
+
+`tests/test_no_assert.py`&nbsp;:
+
+```python
+from caesar_cipher.caesar_cipher import crack, rotate
+
+
+def test_crack_runs():
+    crack(rotate("attaque à l'aube", 3), "aube")
+    try:
+        crack("bonjour", "xyz")
+    except ValueError:
+        pass
+```
+
+`caesar_cipher.py` est couvert à 100&nbsp;%, comme par toute la suite, alors que
+`test_no_assert.py` ne vérifie rien&nbsp;: la couverture dit quelles lignes les tests
+exécutent, pas ce qu'ils vérifient. Les tests par mutations, plus bas, mesurent ce qui
+est vérifié.
+
+```console
+uv run pytest tests/test_caesar_cipher.py tests/test_no_assert.py --cov=caesar_cipher --cov-report=term-missing
+rm tests/test_no_assert.py
+```
 
 </details>
+
+## Débogage post-mortem
+
+`pdb` attend des commandes au clavier&nbsp;: cet exercice se fait dans un terminal à la
+racine du dépôt.
+
+1. Introduisez un bug dans `crack`&nbsp;: remplacez `range(26)` par `range(10)`.
+2. Lancez `uv run pytest --pdb tests/test_crack.py`&nbsp;: au premier test en échec,
+   `pytest` ouvre `pdb` là où l'exception a été levée.
+3. Avec `ll` (le code de la fonction), `p key` et `p known_word` (des valeurs), `w` et
+   `u` (la pile d'appels, jusqu'au test), trouvez pourquoi aucune clef ne convient.
+4. Quittez avec `q`, rétablissez `range(26)` et relancez les tests.
+
+**Documentation utile**
+
+- https://docs.pytest.org/en/stable/how-to/failures.html#using-python-library-pdb-with-pytest
+- https://docs.python.org/fr/3/library/pdb.html#debugger-commands
 
 ## Pour aller plus loin
 
