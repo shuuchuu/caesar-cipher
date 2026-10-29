@@ -1,64 +1,71 @@
-# Tests d'un algorithme de chiffrement
+# Testing an Encryption Algorithm
 
-*[English version](https://github.com/shuuchuu/caesar-cipher/tree/main-en)*
+*[Version française](https://github.com/shuuchuu/caesar-cipher)*
 
-Le projet des travaux pratiques *Tests d'un algorithme de chiffrement*. Leur énoncé est
-ci-dessous, pour les faire dans un Codespace GitHub ou un clone local&nbsp;; c'est le
-même que celui du notebook des travaux pratiques, en
-[français](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-fr.ipynb)
-ou en
-[anglais](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-en.ipynb),
-qui les fait dans Colab.
+The project of the *Testing an encryption algorithm* lab. Its instructions are below, to
+run the lab in a GitHub Codespace or a local clone; they are the same as the lab's
+notebook, in
+[English](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-en.ipynb)
+or in
+[French](https://colab.research.google.com/github/shuuchuu/labs/blob/main/testing-hands-on-fr.ipynb),
+which runs it in Colab.
 
-Nous allons nous intéresser à l'implémentation du [chiffre de
-César](https://fr.wikipedia.org/wiki/Chiffrement_par_d%C3%A9calage).
+We are going to focus on implementing the [Caesar
+cipher](https://en.wikipedia.org/wiki/Caesar_cipher).
 
-Ce chiffrement simple effectue une rotation des caractères de l'alphabet (et ne touche
-pas aux autres caractères, comme la ponctuation ou les espaces).
+This simple encryption method involves rotating characters in the alphabet (and does not
+affect other characters like punctuation or spaces).
 
-## Mise en place de l'environnement de travail
+## Setting up the Working Environment
 
-Ouvrez le dépôt dans un Codespace&nbsp;: sur GitHub, **Code** > **Codespaces** >
-**Create codespace on main**, ou [ce
-lien](https://codespaces.new/shuuchuu/caesar-cipher). Le Codespace installe les
-dépendances à sa création, dans le `.venv` du projet.
+This English version of the lab is the repository's `main-en` branch. Open it in a
+Codespace: on GitHub, on the `main-en` branch, **Code** > **Codespaces** > **Create
+codespace on main-en**, or [this
+link](https://codespaces.new/shuuchuu/caesar-cipher/tree/main-en). The Codespace
+installs the dependencies when it is created, in the project's `.venv`.
 
-Dans un clone local, installez
-[uv](https://docs.astral.sh/uv/getting-started/installation/), puis lancez `uv sync` à
-la racine du dépôt.
+In a local clone of that branch, install
+[uv](https://docs.astral.sh/uv/getting-started/installation/), then run `uv sync` at the
+root of the repository:
 
-Les commandes ci-dessous se lancent dans un terminal à la racine du dépôt (**Terminal** >
-**Nouveau terminal** dans le Codespace), avec `uv run`, qui les exécute dans
-l'environnement du projet. Les fichiers s'écrivent dans l'éditeur. Les solutions sont
-aussi sur la [branche
-`solution`](https://github.com/shuuchuu/caesar-cipher/tree/solution) du dépôt.
+```console
+git clone -b main-en https://github.com/shuuchuu/caesar-cipher.git
+cd caesar-cipher
+uv sync
+```
 
-## Tests à partir de la spécification
+The commands below run in a terminal at the root of the repository (**Terminal** > **New
+Terminal** in the Codespace), through `uv run`, which runs them in the project's
+environment. The files are written in the editor. The solutions are also on the
+repository's [`solution-en`
+branch](https://github.com/shuuchuu/caesar-cipher/tree/solution-en).
 
-Sans regarder le fichier `src/caesar_cipher/caesar_cipher.py`, et d'après la description
-du chiffre de César sur Wikipédia (en particulier les exemples donnés), écrivez quelques
-tests simples de la fonction `rotate(text, key)` fournie&nbsp;: des fonctions qui
-vérifient avec `assert` le chiffrement d'une chaîne. Appelez-les ensuite.
+## Tests from the Specification
 
-Pensez aux cas limites&nbsp;: la fin de l'alphabet, les majuscules, les caractères qui
-ne sont pas des lettres, une clef négative.
+Without looking at the `src/caesar_cipher/caesar_cipher.py` file, and based on the
+description of the Caesar cipher on Wikipedia (especially the examples given), write a
+few simple tests of the provided `rotate(text, key)` function: functions that check the
+encryption of a string with `assert`. Then call them.
 
-Écrivez-les dans un nouveau fichier `exercises.py` à la racine du dépôt, qui commence
-par&nbsp;:
+Think of the edge cases: the end of the alphabet, capital letters, characters that are
+not letters, a negative key.
+
+Write them in a new `exercises.py` file at the root of the repository, which starts
+with:
 
 ```python
 from caesar_cipher.caesar_cipher import rotate
 ```
 
-et exécutez-le avec `uv run python exercises.py`.
+and run it with `uv run python exercises.py`.
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-Un test est une fonction sans argument, dont le nom commence par `test_`, qui compare
-avec `assert` le résultat de `rotate` à la valeur attendue, calculée à la main. Avec une
-clef de 3, `a` devient `d`, et `x` revient au début de l'alphabet. Une clef négative
-décale vers la gauche. Un test qui passe n'affiche rien, un test qui échoue lève une
+A test is a function with no argument, whose name starts with `test_`, that compares
+with `assert` the result of `rotate` to the expected value, computed by hand. With a key
+of 3, `a` becomes `d`, and `x` wraps around to the start of the alphabet. A negative key
+shifts to the left. A test that passes prints nothing, a test that fails raises an
 `AssertionError`.
 
 ```python
@@ -107,31 +114,31 @@ test_rotate_with_negative_key()
 
 </details>
 
-## Utilisation de `pytest`
+## Using `pytest`
 
-Écrivez un fichier `tests/test_caesar_cipher.py` (le dossier `tests/` existe déjà) qui
-regroupe vos exemples de `rotate` en un seul test, paramétré avec
-`@pytest.mark.parametrize`. Donnez un nom à chaque cas, et couvrez au moins&nbsp;:
+Write a `tests/test_caesar_cipher.py` file (the `tests/` folder already exists) that
+groups your examples of `rotate` into a single test, parametrized with
+`@pytest.mark.parametrize`. Give each case a name, and cover at least:
 
-- la fin de l'alphabet (`z` devient `a`)&nbsp;;
-- les majuscules&nbsp;;
-- la ponctuation et les lettres accentuées, qui ne changent pas&nbsp;;
-- une clef négative&nbsp;;
-- une clef supérieure ou égale à 26.
+- the end of the alphabet (`z` becomes `a`);
+- capital letters;
+- punctuation and accented letters, which do not change;
+- a negative key;
+- a key greater than or equal to 26.
 
-Lancez ensuite les tests avec `uv run pytest -v`, qui affiche chaque cas sous son nom.
+Then run the tests with `uv run pytest -v`, which shows each case under its name.
 
-**Documentation utile**
+**Useful documentation**
 
 - https://docs.pytest.org/en/stable/reference/reference.html#pytest-param
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-`@pytest.mark.parametrize` prend les noms des paramètres du test, puis la liste des cas.
-`pytest.param("xyz", 3, "abc", id="wrap-z-to-a")` est un cas nommé `wrap-z-to-a`, que
-`-v` affiche `test_rotate[wrap-z-to-a]`&nbsp;: sans accents, que `pytest` échappe dans
-les noms.
+`@pytest.mark.parametrize` takes the names of the test's parameters, then the list of
+cases. `pytest.param("xyz", 3, "abc", id="wrap-z-to-a")` is a case named `wrap-z-to-a`,
+which `-v` shows as `test_rotate[wrap-z-to-a]`: no accents, which `pytest` escapes in
+names.
 
 ```python
 import pytest
@@ -156,7 +163,7 @@ def test_rotate(text, key, expected):
 <details>
 <summary>Solution</summary>
 
-`tests/test_caesar_cipher.py`&nbsp;:
+`tests/test_caesar_cipher.py`:
 
 ```python
 import pytest
@@ -185,32 +192,31 @@ uv run pytest -v
 
 </details>
 
-## Démarche TDD (Test Driven Development)
+## TDD Approach (Test Driven Development)
 
-On veut ajouter au module `src/caesar_cipher/caesar_cipher.py` une fonction
-`crack(ciphertext, known_word)` qui retrouve la clef d'un message chiffré dont on connaît
-un mot. Développez-la en suivant le cycle du TDD, avec ses tests dans un nouveau fichier
-`tests/test_crack.py`&nbsp;:
+We want to add to the `src/caesar_cipher/caesar_cipher.py` module a `crack(ciphertext,
+known_word)` function that recovers the key of an encrypted message when one of its
+words is known. Develop it following the TDD cycle, with its tests in a new
+`tests/test_crack.py` file:
 
-1. Écrivez un test qui vérifie que `crack(rotate("attaque à l'aube", 3), "aube")` vaut
-   `3`, et lancez `pytest`&nbsp;: il doit échouer, puisque `crack` n'existe pas encore.
-2. Écrivez dans le module le code minimal qui le fait passer, aussi naïf soit-il.
-3. Ajoutez un test qui vérifie que `crack(rotate("attaque à l'aube", 11), "aube")` vaut
-   `11`. Voyez-le échouer, puis généralisez le code pour que les deux tests passent.
-4. Ajoutez un test qui vérifie que `crack` lève une `ValueError` dont le message cite le
-   mot, quand aucune clef ne le fait apparaître. Voyez-le échouer, puis faites-le passer.
-5. Remaniez votre code si besoin, en vérifiant que les tests passent toujours.
+1. Write a test that checks that `crack(rotate("attaque à l'aube", 3), "aube")` is `3`,
+   and run `pytest`: it must fail, since `crack` does not exist yet.
+2. Write in the module the minimal code that makes it pass, however naive.
+3. Add a test that checks that `crack(rotate("attaque à l'aube", 11), "aube")` is `11`.
+   See it fail, then generalize the code so that both tests pass.
+4. Add a test that checks that `crack` raises a `ValueError` whose message quotes the
+   word, when no key reveals it. See it fail, then make it pass.
+5. Refactor your code if needed, checking that the tests still pass.
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-`uv run pytest -v tests/test_crack.py` ne lance que les tests de ce fichier. À l'étape
-1, l'import de `crack` échoue&nbsp;: c'est l'échec attendu. À l'étape 2, `return 3`
-suffit&nbsp;: c'est le code minimal, et le test de l'étape 3 le fait échouer. Pour
-retrouver n'importe quelle clef, essayez les 26 clefs possibles&nbsp;:
-`rotate(ciphertext, -key)` déchiffre avec la clef `key`.
-`pytest.raises(ValueError, match="xyz")` vérifie que le bloc lève une `ValueError` dont
-le message contient `xyz`.
+`uv run pytest -v tests/test_crack.py` runs only that file's tests. At step 1, importing
+`crack` fails: that is the expected failure. At step 2, `return 3` is enough: it is the
+minimal code, and the test of step 3 makes it fail. To recover any key, try the 26
+possible keys: `rotate(ciphertext, -key)` decrypts with the key `key`.
+`pytest.raises(ValueError, match="xyz")` checks that the block raises a `ValueError`
+whose message contains `xyz`.
 
 ```python
 import pytest
@@ -245,7 +251,7 @@ def crack(ciphertext: str, known_word: str) -> int:
 <details>
 <summary>Solution</summary>
 
-`tests/test_crack.py`&nbsp;:
+`tests/test_crack.py`:
 
 ```python
 import pytest
@@ -266,7 +272,7 @@ def test_crack_without_key():
         crack("bonjour", "xyz")
 ```
 
-`src/caesar_cipher/caesar_cipher.py`&nbsp;:
+`src/caesar_cipher/caesar_cipher.py`:
 
 ```python
 from string import ascii_lowercase, ascii_uppercase
@@ -296,33 +302,32 @@ uv run pytest -v tests/test_crack.py
 
 </details>
 
-## Utilisation de `unittest`
+## Using `unittest`
 
-Écrivez cette fois des tests de `crack` avec `unittest`, dans un fichier
-`tests/test_crack_unittest.py`&nbsp;: une classe qui hérite de `unittest.TestCase`, dont
-la méthode `setUp` prépare un message, une clef et le message chiffré avec cette clef, et
-trois tests qui les utilisent&nbsp;:
+This time, write tests of `crack` with `unittest`, in a `tests/test_crack_unittest.py`
+file: a class that inherits from `unittest.TestCase`, whose `setUp` method prepares a
+message, a key and the message encrypted with that key, and three tests that use them:
 
-- `crack` retrouve la clef à partir d'un mot du message&nbsp;;
-- la clef trouvée déchiffre le message&nbsp;;
-- `crack` lève une `ValueError` pour un mot absent du message.
+- `crack` recovers the key from a word of the message;
+- the key found decrypts the message;
+- `crack` raises a `ValueError` for a word that is not in the message.
 
-Lancez-les avec `uv run python -m unittest discover -v`, puis avec `uv run pytest -v`.
-Combien de fois `setUp` est-elle appelée&nbsp;?
+Run them with `uv run python -m unittest discover -v`, then with `uv run pytest -v`. How
+many times is `setUp` called?
 
-**Documentation utile**
+**Useful documentation**
 
-- https://docs.python.org/fr/3/library/unittest.html#unittest.TestCase.setUp
-- https://docs.python.org/fr/3/library/unittest.html#unittest.TestCase.assertRaises
+- https://docs.python.org/3/library/unittest.html#unittest.TestCase.setUp
+- https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertRaises
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-Les attributs que `setUp` pose sur `self` (`self.message`, `self.key`,
-`self.ciphertext`) sont visibles dans chaque test. `self.assertEqual(a, b)` compare deux
-valeurs, et `with self.assertRaises(ValueError):` vérifie que le bloc lève l'exception.
-`unittest discover` trouve les fichiers `test*.py` du paquet `tests` (c'est pour lui que
-le dossier contient un `__init__.py`), et `pytest` lance aussi les tests écrits avec
+The attributes that `setUp` sets on `self` (`self.message`, `self.key`,
+`self.ciphertext`) are visible in every test. `self.assertEqual(a, b)` compares two
+values, and `with self.assertRaises(ValueError):` checks that the block raises the
+exception. `unittest discover` finds the `test*.py` files of the `tests` package (that
+is why the folder holds an `__init__.py`), and `pytest` also runs the tests written with
 `unittest`.
 
 ```python
@@ -348,7 +353,7 @@ class CrackTest(unittest.TestCase):
 <details>
 <summary>Solution</summary>
 
-`tests/test_crack_unittest.py`&nbsp;:
+`tests/test_crack_unittest.py`:
 
 ```python
 import unittest
@@ -374,7 +379,7 @@ class CrackTest(unittest.TestCase):
             crack(self.ciphertext, "train")
 ```
 
-`setUp` est appelée trois fois&nbsp;: avant chacun des trois tests.
+`setUp` is called three times: before each of the three tests.
 
 ```console
 uv run python -m unittest discover -v
@@ -383,34 +388,33 @@ uv run pytest -v
 
 </details>
 
-## Fixtures de `pytest`
+## `pytest` Fixtures
 
-Réécrivez maintenant vos tests `unittest` de `crack` à la manière de `pytest`, dans
-`tests/test_crack.py`, sous les tests de la démarche TDD&nbsp;: la préparation de
-`setUp` devient une fixture `secret` qui renvoie le message, la clef et le message
-chiffré, et chaque test devient une fonction qui la demande.
+Now rewrite your `unittest` tests of `crack` the `pytest` way, in `tests/test_crack.py`,
+below the tests of the TDD approach: the setup of `setUp` becomes a `secret` fixture
+that returns the message, the key and the encrypted message, and each test becomes a
+function that requests it.
 
-Lancez `uv run pytest -v tests/test_crack.py`. Comparez avec `setUp`&nbsp;: combien de
-fois la fixture est-elle calculée&nbsp;? Et pour les tests qui ne la demandent pas&nbsp;?
+Run `uv run pytest -v tests/test_crack.py`. Compare with `setUp`: how many times is the
+fixture computed? And for the tests that don't request it?
 
-**Documentation utile**
+**Useful documentation**
 
 - https://docs.pytest.org/en/stable/how-to/fixtures.html
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-Une fixture est une fonction décorée par `@pytest.fixture`&nbsp;; un test la reçoit en
-nommant l'un de ses paramètres comme elle. Elle peut renvoyer un n-uplet, que le test
-décompose&nbsp;: `message, key, ciphertext = secret` (un `_` en tête de nom marque une
-valeur inutilisée).
+A fixture is a function decorated with `@pytest.fixture`; a test receives it by naming
+one of its parameters after it. It can return a tuple, which the test unpacks:
+`message, key, ciphertext = secret` (a leading `_` in a name marks an unused value).
 
 ```python
 import pytest
 
 from caesar_cipher.caesar_cipher import crack, rotate
 
-# Les tests de la démarche TDD
+# The tests of the TDD approach
 ...
 
 
@@ -434,7 +438,7 @@ def test_finds_key_of_secret(secret):
 <details>
 <summary>Solution</summary>
 
-`tests/test_crack.py`&nbsp;:
+`tests/test_crack.py`:
 
 ```python
 import pytest
@@ -479,10 +483,9 @@ def test_unknown_word_in_secret(secret):
         crack(ciphertext, "train")
 ```
 
-La fixture est calculée avant chacun des trois tests qui la demandent (portée
-«&nbsp;function&nbsp;», par défaut), comme `setUp`. Les tests de la démarche TDD, qui ne
-la demandent pas, ne la calculent pas&nbsp;: `setUp`, lui, tourne avant chaque test de
-sa classe.
+The fixture is computed before each of the three tests that request it (its scope is
+"function" by default), like `setUp`. The tests of the TDD approach, which don't request
+it, don't compute it: `setUp` runs before every test of its class.
 
 ```console
 uv run pytest -v tests/test_crack.py
@@ -490,11 +493,11 @@ uv run pytest -v tests/test_crack.py
 
 </details>
 
-## Simulacres avec `unittest.mock`
+## Mocking with `unittest.mock`
 
-La fonction `encrypt_with_random_key` chiffre un texte avec une clef tirée au
-hasard&nbsp;: son résultat change à chaque appel, ce qui la rend difficile à tester. Elle
-est fournie dans un autre module du paquet, `src/caesar_cipher/keys.py`&nbsp;:
+The `encrypt_with_random_key` function encrypts a text with a randomly drawn key: its
+result changes on every call, which makes it hard to test. It is provided in another
+module of the package, `src/caesar_cipher/keys.py`:
 
 ```python
 from random import randint
@@ -507,30 +510,29 @@ def encrypt_with_random_key(text: str) -> tuple[str, int]:
     return rotate(text, key), key
 ```
 
-Écrivez dans `tests/test_keys.py` un test qui remplace `randint` par un simulacre qui
-renvoie toujours `3`, avec `unittest.mock.patch`, puis qui vérifie le texte chiffré et
-la clef renvoyés, et que le simulacre a été appelé une seule fois, avec les arguments
-`(1, 25)`. Essayez d'abord la cible `"random.randint"`&nbsp;: pourquoi le test
-échoue-t-il&nbsp;?
+Write in `tests/test_keys.py` a test that replaces `randint` with a mock that always
+returns `3`, with `unittest.mock.patch`, then checks the returned encrypted text and
+key, and that the mock was called once, with the arguments `(1, 25)`. First try the
+`"random.randint"` target: why does the test fail?
 
-Si vous avez le temps, écrivez une seconde version du test avec la fixture
-`monkeypatch` de `pytest`.
+If you have time, write a second version of the test with `pytest`'s `monkeypatch`
+fixture.
 
-**Documentation utile**
+**Useful documentation**
 
-- https://docs.python.org/fr/3/library/unittest.mock.html#unittest.mock.patch
-- https://docs.python.org/fr/3/library/unittest.mock.html#where-to-patch
+- https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch
+- https://docs.python.org/3/library/unittest.mock.html#where-to-patch
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-`mock.patch("…", return_value=3)` remplace un nom, le temps du bloc `with`, par un
-simulacre qui renvoie toujours `3`&nbsp;; `as randint` nomme ce simulacre, qui
-enregistre ses appels. `keys.py` fait `from random import randint`&nbsp;: le module a sa
-propre référence à la fonction, que remplacer `random.randint` ne touche pas. La cible
-est le nom là où le code testé le cherche&nbsp;: `"caesar_cipher.keys.randint"`. Avec la
-fixture `monkeypatch`, `monkeypatch.setattr(keys, "randint", lambda a, b: 3)` remplace
-le même nom, sans enregistrer les appels.
+`mock.patch("…", return_value=3)` replaces a name, for the duration of the `with` block,
+with a mock that always returns `3`; `as randint` names that mock, which records its
+calls. `keys.py` does `from random import randint`: the module has its own reference to
+the function, which replacing `random.randint` does not touch. The target is the name
+where the code under test looks it up: `"caesar_cipher.keys.randint"`. With the
+`monkeypatch` fixture, `monkeypatch.setattr(keys, "randint", lambda a, b: 3)` replaces
+the same name, without recording the calls.
 
 ```python
 from unittest import mock
@@ -553,7 +555,7 @@ uv run pytest -v tests/test_keys.py
 <details>
 <summary>Solution</summary>
 
-`tests/test_keys.py`&nbsp;:
+`tests/test_keys.py`:
 
 ```python
 from unittest import mock
@@ -581,34 +583,33 @@ uv run pytest -v tests/test_keys.py
 
 </details>
 
-## Couverture de code
+## Code Coverage
 
-L'extension `pytest-cov`, installée avec les dépendances du dépôt, mesure les lignes du
-paquet que les tests exécutent.
+The `pytest-cov` plugin, installed with the repository's dependencies, measures the
+lines of the package that the tests run.
 
-1. Mesurez la couverture du paquet `caesar_cipher` par les seuls tests de
-   `tests/test_caesar_cipher.py`, avec la liste des lignes manquées&nbsp;: quelles
-   fonctions ces tests n'exécutent-ils pas&nbsp;?
-2. Mesurez-la pour toute la suite de tests.
-3. Écrivez dans `tests/test_no_assert.py` un test qui appelle `crack` sans rien
-   vérifier&nbsp;: une fois avec un mot du message, une fois avec un mot absent. Mesurez
-   la couverture par `tests/test_caesar_cipher.py` et ce seul fichier, et comparez la
-   ligne de `caesar_cipher.py` à celle de la question 2. Vos tests vérifient-ils tout ce
-   que font `rotate` et `crack`&nbsp;?
+1. Measure the coverage of the `caesar_cipher` package by the tests of
+   `tests/test_caesar_cipher.py` alone, with the list of missed lines: which functions
+   do these tests not run?
+2. Measure it for the whole test suite.
+3. Write in `tests/test_no_assert.py` a test that calls `crack` without checking
+   anything: once with a word of the message, once with a missing word. Measure the
+   coverage by `tests/test_caesar_cipher.py` and that file alone, and compare the line
+   of `caesar_cipher.py` with the one of question 2. Do your tests check everything
+   `rotate` and `crack` do?
 
-Supprimez ensuite `tests/test_no_assert.py` (`rm tests/test_no_assert.py`)&nbsp;: un test
-qui ne vérifie rien n'a pas sa place dans la suite.
+Then delete `tests/test_no_assert.py` (`rm tests/test_no_assert.py`): a test that checks
+nothing has no place in the suite.
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-`--cov=caesar_cipher` mesure la couverture du paquet, `--cov-report=term-missing`
-l'affiche avec, pour chaque fichier, ses instructions (`Stmts`), celles qu'aucun test
-n'a exécutées (`Miss`), le pourcentage couvert (`Cover`) et les numéros des lignes
-manquées (`Missing`). `pytest` ne lance que les fichiers de tests nommés sur la ligne de
-commande, et tous si on n'en nomme aucun. Un appel à `crack` avec un mot absent lève une
-`ValueError`&nbsp;: sans `pytest.raises`, qui vérifierait l'exception, entourez-le d'un
-`try`/`except ValueError: pass`.
+`--cov=caesar_cipher` measures the package's coverage, `--cov-report=term-missing` shows
+it with, for each file, its statements (`Stmts`), those no test ran (`Miss`), the
+percentage covered (`Cover`) and the numbers of the missed lines (`Missing`). `pytest`
+runs only the test files named on the command line, and all of them when none is named.
+A call to `crack` with a missing word raises a `ValueError`: without `pytest.raises`,
+which would check the exception, wrap it in a `try`/`except ValueError: pass`.
 
 ```console
 uv run pytest tests/test_caesar_cipher.py --cov=caesar_cipher --cov-report=term-missing
@@ -631,20 +632,20 @@ def test_crack_runs():
 <details>
 <summary>Solution</summary>
 
-`crack` (lignes 15 à 19 de `caesar_cipher.py`) et `keys.py` ne sont exécutés par aucun
-test de `tests/test_caesar_cipher.py`&nbsp;:
+`crack` (lines 15 to 19 of `caesar_cipher.py`) and `keys.py` are run by no test of
+`tests/test_caesar_cipher.py`:
 
 ```console
 uv run pytest tests/test_caesar_cipher.py --cov=caesar_cipher --cov-report=term-missing
 ```
 
-Toute la suite exécute 100&nbsp;% des lignes&nbsp;:
+The whole suite runs 100% of the lines:
 
 ```console
 uv run pytest --cov=caesar_cipher --cov-report=term-missing
 ```
 
-`tests/test_no_assert.py`&nbsp;:
+`tests/test_no_assert.py`:
 
 ```python
 from caesar_cipher.caesar_cipher import crack, rotate
@@ -658,10 +659,9 @@ def test_crack_runs():
         pass
 ```
 
-`caesar_cipher.py` est couvert à 100&nbsp;%, comme par toute la suite, alors que
-`test_no_assert.py` ne vérifie rien&nbsp;: la couverture dit quelles lignes les tests
-exécutent, pas ce qu'ils vérifient. Les tests par mutations, plus bas, mesurent ce qui
-est vérifié.
+`caesar_cipher.py` is 100% covered, as by the whole suite, although `test_no_assert.py`
+checks nothing: coverage tells which lines the tests run, not what they check. Mutation
+testing, below, measures what is checked.
 
 ```console
 uv run pytest tests/test_caesar_cipher.py tests/test_no_assert.py --cov=caesar_cipher --cov-report=term-missing
@@ -670,47 +670,47 @@ rm tests/test_no_assert.py
 
 </details>
 
-## Débogage post-mortem
+## Post-Mortem Debugging
 
-`pdb` attend des commandes au clavier&nbsp;: cet exercice se fait dans un terminal à la
-racine du dépôt.
+`pdb` waits for commands typed on the keyboard: this exercise is done in a terminal at
+the root of the repository.
 
-1. Introduisez un bug dans `crack`&nbsp;: remplacez `range(26)` par `range(10)`.
-2. Lancez `uv run pytest --pdb tests/test_crack.py`&nbsp;: au premier test en échec,
-   `pytest` ouvre `pdb` là où l'exception a été levée.
-3. Avec `ll` (le code de la fonction), `p key` et `p known_word` (des valeurs), `w` et
-   `u` (la pile d'appels, jusqu'au test), trouvez pourquoi aucune clef ne convient.
-4. Quittez avec `q`, rétablissez `range(26)` et relancez les tests.
+1. Introduce a bug in `crack`: replace `range(26)` with `range(10)`.
+2. Run `uv run pytest --pdb tests/test_crack.py`: on the first failing test, `pytest`
+   opens `pdb` where the exception was raised.
+3. With `ll` (the function's code), `p key` and `p known_word` (values), `w` and `u`
+   (the call stack, up to the test), find out why no key fits.
+4. Quit with `q`, restore `range(26)` and run the tests again.
 
-**Documentation utile**
+**Useful documentation**
 
 - https://docs.pytest.org/en/stable/how-to/failures.html#using-python-library-pdb-with-pytest
-- https://docs.python.org/fr/3/library/pdb.html#debugger-commands
+- https://docs.python.org/3/library/pdb.html#debugger-commands
 
-## Pour aller plus loin
+## Going Further
 
-### Tests par génération
+### Property-based Testing
 
-Avec `hypothesis`, écrivez dans un fichier `tests/test_properties.py` des tests de trois
-propriétés de `rotate`, vraies pour tout texte et toute clef&nbsp;:
+With `hypothesis`, write in a `tests/test_properties.py` file tests of three properties
+of `rotate`, true for any text and any key:
 
-- le texte chiffré a la même longueur que le texte&nbsp;;
-- chiffrer avec `key1` puis avec `key2` revient à chiffrer avec `key1 + key2`&nbsp;;
-- un texte sans lettres ASCII ne change pas.
+- the encrypted text has the same length as the text;
+- encrypting with `key1` then with `key2` amounts to encrypting with `key1 + key2`;
+- a text without ASCII letters does not change.
 
-**Documentation utile**
+**Useful documentation**
 
 - https://hypothesis.readthedocs.io/en/latest/reference/strategies.html#hypothesis.strategies.text
 - https://hypothesis.readthedocs.io/en/latest/reference/strategies.html#hypothesis.strategies.characters
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-`@given(st.text(), st.integers())` appelle le test avec des centaines de textes et de
-clefs générés, passés à ses paramètres. `st.text(alphabet)` génère des textes faits des
-caractères d'`alphabet`, qui peut être une stratégie&nbsp;:
-`st.characters(exclude_characters=ascii_letters)` génère tous les caractères sauf les
-lettres ASCII.
+`@given(st.text(), st.integers())` calls the test with hundreds of generated texts and
+keys, passed to its parameters. `st.text(alphabet)` generates texts made of the
+characters of `alphabet`, which can be a strategy:
+`st.characters(exclude_characters=ascii_letters)` generates every character but the
+ASCII letters.
 
 ```python
 from string import ascii_letters
@@ -741,7 +741,7 @@ def test_rotate_keeps_non_letters(text, key):
 <details>
 <summary>Solution</summary>
 
-`tests/test_properties.py`&nbsp;:
+`tests/test_properties.py`:
 
 ```python
 from string import ascii_letters
@@ -773,33 +773,33 @@ uv run pytest -v tests/test_properties.py
 
 </details>
 
-### Tests par mutations
+### Mutation Testing
 
-Utilisez `mutmut` pour trouver les comportements que vos tests ne vérifient pas&nbsp;:
-chaque mutation qui passe votre suite de tests en révèle un. `mutmut run` crée et teste
-les mutations, `mutmut results` liste celles qui ont survécu, et `mutmut show <nom>`
-affiche le changement fait par l'une d'elles&nbsp;:
+Use `mutmut` to find the behaviors your tests do not check: each mutation that passes
+your test suite reveals one. `mutmut run` creates and tests the mutations, `mutmut
+results` lists those that survived, and `mutmut show <name>` shows the change one of
+them makes:
 
 ```console
 uv run mutmut run
 uv run mutmut results
 ```
 
-Itérez pour réduire le nombre de mutations qui passent votre suite de tests. Une
-mutation qui survit révèle-t-elle toujours un test manquant&nbsp;?
+Iterate to reduce the number of mutations that pass your test suite. Does a surviving
+mutation always reveal a missing test?
 
-**Documentation utile**
+**Useful documentation**
 
 - https://mutmut.readthedocs.io/
 
 <details>
-<summary>Conseils supplémentaires</summary>
+<summary>Additional hints</summary>
 
-Une mutation qui survit est une modification du code que vos tests laissent
-passer&nbsp;: `mutmut show` montre la ligne changée. Écrivez un test qui échoue sur la
-version modifiée et passe sur l'originale, puis relancez `mutmut run`. Une mutation qui
-ne change pas ce que fait la fonction (une mutation *équivalente*) survit à tous les
-tests&nbsp;: il n'y a alors rien à ajouter.
+A surviving mutation is a change of the code that your tests let pass: `mutmut show`
+shows the changed line. Write a test that fails on the changed version and passes on the
+original one, then run `mutmut run` again. A mutation that does not change what the
+function does (an *equivalent* mutation) survives every test: there is then nothing to
+add.
 
 ```console
 uv run mutmut show caesar_cipher.caesar_cipher.x_crack__mutmut_2
@@ -810,10 +810,9 @@ uv run mutmut show caesar_cipher.caesar_cipher.x_crack__mutmut_2
 <details>
 <summary>Solution</summary>
 
-Avec les tests des solutions précédentes, une seule mutation survit&nbsp;: `range(26)`
-devenu `range(27)`. La clef 26 revient à la clef 0, déjà essayée&nbsp;: cette mutation ne
-change pas ce que renvoie `crack`, et aucun test ne peut la détecter (mutation
-équivalente).
+With the tests of the previous solutions, a single mutation survives: `range(26)` turned
+into `range(27)`. Key 26 amounts to key 0, already tried: this mutation does not change
+what `crack` returns, and no test can detect it (equivalent mutation).
 
 ```console
 uv run mutmut results
