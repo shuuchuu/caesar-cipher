@@ -51,3 +51,7 @@ search-path = ["."]
 [build-system]
 build-backend = "uv_build"
 requires = ["uv_build>=0.13.6,<0.14.0"]
+
+# Le dépôt garde son nom, imprimé dans les PDF : seul le paquet est en français.
+[tool.uv.build-backend]
+module-name = "chiffre_cesar"
