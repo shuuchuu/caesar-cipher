@@ -4,13 +4,15 @@ authors = [
 ]
 dependencies = []
 description = "Implementation and testing of a Caesar cipher."
-homepage = "https://github.com/shuuchuu/caesar-cipher"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 name = "caesar-cipher"
 readme = "README.md"
 requires-python = ">= 3.13"
 version = "0.1.0"
+
+[project.urls]
+Homepage = "https://github.com/shuuchuu/caesar-cipher"
 
 [dependency-groups]
 dev = [
@@ -25,9 +27,6 @@ dev = [
 [tool.pytest]
 # Not mutmut's copy of the tests, in mutants/.
 testpaths = ["tests"]
-
-[tool.ruff]
-target-version = "py313"
 
 [tool.ruff.lint]
 ignore = [
